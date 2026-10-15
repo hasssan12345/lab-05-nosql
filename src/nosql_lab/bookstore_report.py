@@ -16,15 +16,18 @@ def main():
     client = None
 
     try:
-        if not all([MONGODB_ATLAS_URL, MONGODB_ATLAS_USER, MONGODB_ATLAS_PWD]):
-            raise ValueError("Missing MongoDB environment variables")
+        if not MONGODB_ATLAS_URL:
+            raise ValueError("Missing MongoDB URL")
 
-        client = MongoClient(
-            MONGODB_ATLAS_URL,
-            username=MONGODB_ATLAS_USER,
-            password=MONGODB_ATLAS_PWD,
-            serverSelectionTimeoutMS=10000
-        )
+        if MONGODB_ATLAS_USER and MONGODB_ATLAS_PWD:
+            client = MongoClient(
+                MONGODB_ATLAS_URL,
+                username=MONGODB_ATLAS_USER,
+                password=MONGODB_ATLAS_PWD,
+                serverSelectionTimeoutMS=10000
+            )
+        else:
+            client = MongoClient(MONGODB_ATLAS_URL, serverSelectionTimeoutMS=10000)
 
         client.admin.command("ping")
         logging.info("Connected to MongoDB")
